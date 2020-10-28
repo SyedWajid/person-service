@@ -8,6 +8,25 @@ services:
       - "8080:8080"
     links:
       - logstash
+    depends_on:
+      - logstash
+      - mysql-service
+
+  mysql-service:
+    image: mysql:5.7
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=person
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
 
   elasticsearch:
     image: elasticsearch:5
