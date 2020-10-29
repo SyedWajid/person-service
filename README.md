@@ -3,3 +3,5 @@ This is a spring boot application that uses exposes restfull apis for the person
 It uses Spring Data to fetch/retreive/update/delete data in relational database.
 It is using Redis for caching
 It uses ELK for extensive loggin.
+
+All the tools like Redis, ELK, mysql database are configured using docker compose
