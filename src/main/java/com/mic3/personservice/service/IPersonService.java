@@ -1,9 +1,11 @@
 package com.mic3.personservice.service;
 
 import com.mic3.personservice.domain.Person;
-
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+/**
+ * Service for person entity
+ */
 public interface IPersonService {
-    List<Person> getPersons();
+    Page<Person> getPersons(Pageable pageable);
 }

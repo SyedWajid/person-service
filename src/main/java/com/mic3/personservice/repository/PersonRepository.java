@@ -1,7 +1,11 @@
 package com.mic3.personservice.repository;
 
 import com.mic3.personservice.domain.Person;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PersonRepository extends CrudRepository<Person, Integer> {
+/**
+ * @author Syed Wajid
+ * JPA repository for person
+ */
+public interface PersonRepository extends JpaRepository<Person, Integer> {
 }
