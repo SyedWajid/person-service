@@ -28,9 +28,14 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @RestController
 @Slf4j
-@RequestMapping(path = {"/api/v1/persons"}, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequestMapping(path = {"/api/v1/persons"})//, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 //@OpenAPIDefinition(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 public class PersonController {
+
+    private static final String NEW_PERSON_LOG = "New person was created id:{}";
+    private static final String PERSON_UPDATED_LOG = "Person:{} was updated";
+    private static final String PERSON_DELETED_LOG = "Person:{} was deleted";
+
 
     /**
      * Person service reference
@@ -71,17 +76,18 @@ public class PersonController {
 
     /**
      * Rest api for creating person
-     * @param Person
+     * @param person
      * @return
      */
 
     @Operation(summary = "Crate a new person")
     @ApiResponse(responseCode = "201", description = "Person is created",
                  content = {@Content(schema = @Schema(implementation = Person.class))})
+    @PostMapping
     public ResponseEntity<Person> createPerson(
-            @Valid @RequestBody Person Person) {
-        final Person createdPerson = null;//personService.createPerson(Person);
-        //log.info(NEW_ORDER_LOG, createdPerson.toString());
+            @Valid @RequestBody Person person) {
+        final Person createdPerson = personService.createPerson(person);
+        log.info(NEW_PERSON_LOG, createdPerson.toString());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPerson);
     }
 
@@ -90,14 +96,14 @@ public class PersonController {
      * @param personId
      * @return
      */
-    @Operation(summary = "Get an person by id")
+    @Operation(summary = "Get a person by id")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Found the person",
                                 content = {@Content(schema = @Schema(implementation = Person.class))}),
             @ApiResponse(responseCode = "404", description = "Person not found", content = @Content)})
     @GetMapping(path = "/{personId}")
-    public ResponseEntity<Person> loadPerson(@PathVariable(required = true) String personId) {
-        final Optional<Person> person = null;//personService.loadPerson(id);
-        if (person.isPresent()) {
+    public ResponseEntity<Person> loadPerson(@PathVariable(required = true) Long personId) {
+        final Optional<Person> person = personService.loadPerson(personId);
+        if (!person.isPresent()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(person.get());
@@ -106,23 +112,41 @@ public class PersonController {
     /**
      * Update person object
      * @param personId
-     * @param Person
+     * @param person
      * @return
      */
-    @Operation(summary = "Update an person by its id")
+    @Operation(summary = "Update a person by its id")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Person was updated",
                             content = {@Content(schema = @Schema(implementation = Person.class))}),
             @ApiResponse(responseCode = "404", description = "Person not found", content = @Content)})
     @PutMapping(path = "/{personId}", consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<Person> updateCustomQuoteRequest(
-            @PathVariable(required = true) String personId,
-            @Valid @RequestBody Person Person) {
-        final Optional<Person> updatedPerson = null;
-                //personService.updatePerson(personId, Person);
-        if (updatedPerson.isPresent()) {
+            @PathVariable(required = true) long personId,
+            @Valid @RequestBody Person person) {
+        final Optional<Person> updatedPerson = personService.updatePerson(personId, person);
+        if (!updatedPerson.isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        //logger.info(ORDER_UPDATED_LOG, updatedPerson.toString());
+        log.info(PERSON_UPDATED_LOG, updatedPerson.toString());
+        return ResponseEntity.ok(updatedPerson.get());
+    }
+
+    /**
+     * Delete person object
+     * @param personId
+     * @return
+     */
+    @Operation(summary = "Delete person by its id")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Person was deleted"),
+            @ApiResponse(responseCode = "404", description = "Person not found", content = @Content)})
+    @DeleteMapping(path = "/{personId}")
+    public ResponseEntity<Person> deletePerson(
+            @PathVariable(required = true) long personId) {
+        final Optional<Person> updatedPerson = personService.deletePerson(personId);
+        if (!updatedPerson.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        log.info(PERSON_DELETED_LOG, updatedPerson.toString());
         return ResponseEntity.ok(updatedPerson.get());
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 /**
  * @author Syed Wajid
  *
@@ -36,15 +38,39 @@ public class PersonServiceImpl implements  IPersonService{
      * @param pageable
      * @return
      */
-    @Cacheable(
+    /*@Cacheable(
             cacheNames = "persons",
             unless = "#result == null"
-    )
+    )*/
     public Page<Person> getPersons(Pageable pageable){
         return this.personRepository.findAll(pageable);//.stream().map(person -> new Person()).collect(Collectors.toList());
     }
 
-    public void add(Person person){
-        this.personRepository.save(person);
+    public Person createPerson(Person person){
+        return this.personRepository.save(person);
+    }
+
+    @Override
+    public Optional<Person> loadPerson(long personId) {
+        return this.personRepository.findById(personId);
+    }
+
+    @Override
+    public Optional<Person> updatePerson(long personId, Person person) {
+        Optional<Person> personOptional = loadPerson(personId);
+        if(personOptional.isPresent()){
+            person.setId(personId);
+            return Optional.of(this.personRepository.save(person));
+        }
+        return personOptional;
+    }
+
+    @Override
+    public Optional<Person> deletePerson(long personId) {
+        Optional<Person> personOptional = loadPerson(personId);
+        if(personOptional.isPresent()){
+            this.personRepository.delete(personOptional.get());
+        }
+        return personOptional;
     }
 }
