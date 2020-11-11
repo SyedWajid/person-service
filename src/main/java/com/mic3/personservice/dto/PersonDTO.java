@@ -1,38 +1,26 @@
-package com.mic3.personservice.domain;
+package com.mic3.personservice.dto;
 
-import lombok.*;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Set;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Person {
+public class PersonDTO {
     /**
      * Id field
      */
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
     /**
      * Person name
      */
-    @NotEmpty
     private String name; //required
 
     /**
      * Person surname
      */
-    @NotEmpty
     private String surname;// (required)
 
     /**
@@ -63,10 +51,9 @@ public class Person {
     /**
      * Contacts for person
      */
-    @OneToMany(fetch = FetchType.LAZY)
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    private Set<Person> contacts;
+    //@OneToMany(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<PersonDTO> contacts;
 
     /**
      * Date when person was created

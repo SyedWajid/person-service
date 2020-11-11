@@ -1,8 +1,10 @@
 package com.mic3.personservice.service;
 
 import com.mic3.personservice.domain.Person;
+import com.mic3.personservice.dto.PersonDTO;
 import com.mic3.personservice.repository.PersonRepository;
-import org.springframework.cache.annotation.Cacheable;
+import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.Optional;
  * Service for person entity, it uses person repository for its operations
  */
 @Service
+@AllArgsConstructor
 @Transactional//(readonly=true)
 public class PersonServiceImpl implements  IPersonService{
 
@@ -24,53 +27,65 @@ public class PersonServiceImpl implements  IPersonService{
      */
     private PersonRepository personRepository;
 
-    /**
-     * Using constructor injection
-     * @param personRepository
-     */
-    public PersonServiceImpl(PersonRepository personRepository){
-        this.personRepository = personRepository;
-    }
+    private ModelMapper modelMapper;
 
     /**
      * Return page of person objects based on query parameters
-     * Using chaching
+     * Using chache
      * @param pageable
      * @return
      */
     /*@Cacheable(
-            cacheNames = "persons",
-            unless = "#result == null"
+            cacheNames = "persons2",
+            unless = "#result == null",
+            key = "#pageable"
     )*/
-    public Page<Person> getPersons(Pageable pageable){
-        return this.personRepository.findAll(pageable);//.stream().map(person -> new Person()).collect(Collectors.toList());
+    public Page<PersonDTO> getPersons(Pageable pageable){
+        return this.personRepository.findAll(pageable).map(person ->
+                toDTO(person)
+        );
     }
 
-    public Person createPerson(Person person){
-        return this.personRepository.save(person);
+    public PersonDTO createPerson(PersonDTO person){
+        Person personEntity = toEntity(person);
+        personEntity = this.personRepository.save(personEntity);
+        return toDTO(personEntity);
     }
 
     @Override
-    public Optional<Person> loadPerson(long personId) {
-        return this.personRepository.findById(personId);
+    public PersonDTO loadPerson(long personId) {
+        Optional<Person> person = this.personRepository.findById(personId);
+        if(person.isPresent()){
+            return toDTO(person.get());
+        }
+        throw new PersonNotFoundException(personId);
     }
 
     @Override
-    public Optional<Person> updatePerson(long personId, Person person) {
-        Optional<Person> personOptional = loadPerson(personId);
+    public PersonDTO updatePerson(long personId, PersonDTO person) {
+        Optional<Person> personOptional = this.personRepository.findById(personId);
         if(personOptional.isPresent()){
             person.setId(personId);
-            return Optional.of(this.personRepository.save(person));
+            Person personBean = this.personRepository.save(toEntity(person));
+            return toDTO(personBean);
         }
-        return personOptional;
+        throw new PersonNotFoundException(personId);
     }
 
     @Override
-    public Optional<Person> deletePerson(long personId) {
-        Optional<Person> personOptional = loadPerson(personId);
+    public void deletePerson(long personId) {
+        Optional<Person> personOptional = this.personRepository.findById(personId);
         if(personOptional.isPresent()){
             this.personRepository.delete(personOptional.get());
         }
-        return personOptional;
+        throw new PersonNotFoundException(personId);
+    }
+
+    private Person toEntity(PersonDTO personDTO){
+        return modelMapper.map(personDTO, Person.class);
+    }
+
+    private PersonDTO toDTO(Person person){
+        return modelMapper.map(person, PersonDTO.class);
     }
 }

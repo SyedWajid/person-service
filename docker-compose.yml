@@ -11,6 +11,8 @@ services:
     depends_on:
       - logstash
       - mysql-service
+    environment:
+      - "SPRING_PROFILES_ACTIVE=prod"
 
   mysql-service:
     image: mysql:5.7
@@ -23,6 +25,7 @@ services:
       - MYSQL_DATABASE=person
 
   redis:
+    container_name: redis
     image: redis
     ports:
       - "6379:6379"

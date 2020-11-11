@@ -1,23 +1,22 @@
 package com.mic3.personservice.rest;
 
 import com.mic3.personservice.domain.Person;
+import com.mic3.personservice.dto.PersonDTO;
 import com.mic3.personservice.service.IPersonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
-import java.util.Optional;
 
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
@@ -27,14 +26,16 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
  */
 
 @RestController
+@AllArgsConstructor
 @Slf4j
 @RequestMapping(path = {"/api/v1/persons"})//, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 //@OpenAPIDefinition(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+
 public class PersonController {
 
     private static final String NEW_PERSON_LOG = "New person was created id:{}";
     private static final String PERSON_UPDATED_LOG = "Person:{} was updated";
-    private static final String PERSON_DELETED_LOG = "Person:{} was deleted";
+    private static final String PERSON_DELETED_LOG = "Person with id:{} was deleted";
 
 
     /**
@@ -43,34 +44,16 @@ public class PersonController {
     private IPersonService personService;
 
     /**
-     * Using constructor injection
-     * @param personService
-     */
-    public PersonController(IPersonService personService){
-        this.personService = personService;
-    }
-
-    /**
      * Returns a list of persons and sorted based on the query parameters
-     * @param page
-     * @param size
-     * @param sortField
-     * @param direction
+     * @param pageable
      * @return
      */
     @Operation(summary = "Returns a list of persons and sorted based on the query parameters")
     @ApiResponse(responseCode = "200", description = "List of persons",
                  content = {@Content(schema = @Schema(implementation = Page.class))})
     @GetMapping
-    public ResponseEntity<Page<Person>> getPersons(@RequestParam(defaultValue = "0") int page,
-                                                   @RequestParam(defaultValue = "3") int size,
-                                                   @RequestParam(required = false, name = "sortField",
-                                                           defaultValue = "created") String sortField,
-                                                   @RequestParam(required = false, name = "direction",
-                                                           defaultValue = "DESC") String direction){
-        log.info("persons are " + personService.getPersons(PageRequest.of(page, size)));
-        Page<Person> result = personService.getPersons(PageRequest.of(page, size,
-                                                       Sort.Direction.fromString(direction), sortField));
+    public ResponseEntity<Page<PersonDTO>> getPersons(Pageable pageable){
+        Page<PersonDTO> result = personService.getPersons(pageable);
         return ResponseEntity.ok(result);
     }
 
@@ -79,14 +62,13 @@ public class PersonController {
      * @param person
      * @return
      */
-
     @Operation(summary = "Crate a new person")
     @ApiResponse(responseCode = "201", description = "Person is created",
-                 content = {@Content(schema = @Schema(implementation = Person.class))})
+                 content = {@Content(schema = @Schema(implementation = PersonDTO.class))})
     @PostMapping
-    public ResponseEntity<Person> createPerson(
-            @Valid @RequestBody Person person) {
-        final Person createdPerson = personService.createPerson(person);
+    public ResponseEntity<PersonDTO> createPerson(
+            @Valid @RequestBody PersonDTO person) {
+        final PersonDTO createdPerson = personService.createPerson(person);
         log.info(NEW_PERSON_LOG, createdPerson.toString());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPerson);
     }
@@ -98,16 +80,14 @@ public class PersonController {
      */
     @Operation(summary = "Get a person by id")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Found the person",
-                                content = {@Content(schema = @Schema(implementation = Person.class))}),
+                                content = {@Content(schema = @Schema(implementation = PersonDTO.class))}),
             @ApiResponse(responseCode = "404", description = "Person not found", content = @Content)})
     @GetMapping(path = "/{personId}")
-    public ResponseEntity<Person> loadPerson(@PathVariable(required = true) Long personId) {
-        final Optional<Person> person = personService.loadPerson(personId);
-        if (!person.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(person.get());
+    public ResponseEntity<PersonDTO> loadPerson(@PathVariable(required = true) Long personId) {
+        return ResponseEntity.ok(personService.loadPerson(personId));
     }
+
+    //todo contacts of person
 
     /**
      * Update person object
@@ -120,15 +100,12 @@ public class PersonController {
                             content = {@Content(schema = @Schema(implementation = Person.class))}),
             @ApiResponse(responseCode = "404", description = "Person not found", content = @Content)})
     @PutMapping(path = "/{personId}", consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Person> updateCustomQuoteRequest(
-            @PathVariable(required = true) long personId,
-            @Valid @RequestBody Person person) {
-        final Optional<Person> updatedPerson = personService.updatePerson(personId, person);
-        if (!updatedPerson.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<PersonDTO> updateCustomQuoteRequest(
+            @PathVariable long personId,
+            @Valid @RequestBody PersonDTO person) {
+        PersonDTO updatedPerson = personService.updatePerson(personId, person);
         log.info(PERSON_UPDATED_LOG, updatedPerson.toString());
-        return ResponseEntity.ok(updatedPerson.get());
+        return ResponseEntity.ok(updatedPerson);
     }
 
     /**
@@ -136,17 +113,13 @@ public class PersonController {
      * @param personId
      * @return
      */
+    //todo 204
     @Operation(summary = "Delete person by its id")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Person was deleted"),
-            @ApiResponse(responseCode = "404", description = "Person not found", content = @Content)})
+    @ApiResponses(value = {@ApiResponse(responseCode = "404", description = "Person not found", content = @Content)})
     @DeleteMapping(path = "/{personId}")
-    public ResponseEntity<Person> deletePerson(
-            @PathVariable(required = true) long personId) {
-        final Optional<Person> updatedPerson = personService.deletePerson(personId);
-        if (!updatedPerson.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        log.info(PERSON_DELETED_LOG, updatedPerson.toString());
-        return ResponseEntity.ok(updatedPerson.get());
+    public void deletePerson(
+            @PathVariable long personId) {
+        personService.deletePerson(personId);
+        log.info(PERSON_DELETED_LOG, personId);
     }
 }
