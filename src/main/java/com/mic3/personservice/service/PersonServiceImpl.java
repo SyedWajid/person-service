@@ -77,6 +77,7 @@ public class PersonServiceImpl implements  IPersonService{
         Optional<Person> personOptional = this.personRepository.findById(personId);
         if(personOptional.isPresent()){
             this.personRepository.delete(personOptional.get());
+            return;
         }
         throw new PersonNotFoundException(personId);
     }
