@@ -1,12 +1,14 @@
 package com.mic3.personservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Set;
 
 @Data
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class PersonDTO {
     /**
      * Id field
@@ -52,7 +54,6 @@ public class PersonDTO {
      * Contacts for person
      */
     //@OneToMany(fetch = FetchType.LAZY)
-    @JsonIgnore
     private Set<PersonDTO> contacts;
 
     /**
