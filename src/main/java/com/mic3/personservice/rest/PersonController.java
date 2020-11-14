@@ -100,7 +100,7 @@ public class PersonController {
                             content = {@Content(schema = @Schema(implementation = Person.class))}),
             @ApiResponse(responseCode = "404", description = "Person not found", content = @Content)})
     @PutMapping(path = "/{personId}", consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<PersonDTO> updateCustomQuoteRequest(
+    public ResponseEntity<PersonDTO> updatePerson(
             @PathVariable long personId,
             @Valid @RequestBody PersonDTO person) {
         PersonDTO updatedPerson = personService.updatePerson(personId, person);

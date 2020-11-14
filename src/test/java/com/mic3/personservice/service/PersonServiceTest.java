@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.mic3.personservice.util.TestPersonUtil.getDefaultPerson;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -35,7 +37,7 @@ public class PersonServiceTest {
     ModelMapper modelMapper;
 
     @Test
-    public void personCreateTest(){
+    public void shouldCreatePerson(){
         Person person = getDefaultPerson();
 
         when(personRepository.findById(person.getId())).thenReturn(Optional.of(person));
@@ -44,11 +46,12 @@ public class PersonServiceTest {
 
         PersonDTO personDTO = modelMapper.map(person, PersonDTO.class);
         PersonDTO savedPerson = personService.createPerson(personDTO);
-        assertThat(savedPerson.getId()).isEqualTo(person.getId());
+        assertEquals(personDTO.getId(), savedPerson.getId());
+        verify(personRepository, times(1)).save(any(Person.class));
     }
 
     @Test
-    public void personsListTest(){
+    public void shouldReturnPersonList(){
         Pageable p = PageRequest.of(0, 10);
         List<Person> personList = new ArrayList<>();
         personList.add(getDefaultPerson());
@@ -57,28 +60,61 @@ public class PersonServiceTest {
 
         Person person = getDefaultPerson();
         Page<PersonDTO> pagedResult = this.personService.getPersons(PageRequest.of(0, 10));
-        assertThat(pagedResult.getTotalElements()).isEqualTo(1);
-        assertThat(pagedResult.get().findFirst().get().getName()).isEqualTo(person.getName());
+        assertEquals(1, pagedResult.getTotalElements());
+        assertEquals(person.getName(), pagedResult.get().findFirst().get().getName());
     }
 
     @Test
-    public void deletePersonTest(){
+    public void shouldUpdatePerson(){
         Person person = getDefaultPerson();
+        person.setId(1L);
         when(personRepository.findById(person.getId())).thenReturn(Optional.of(person));
-        doNothing().when(personRepository).delete(person);
-        personService.deletePerson(person.getId());
+
+        when(personRepository.save(any(Person.class))).thenReturn(person);
+
+        PersonDTO personDTO = modelMapper.map(person, PersonDTO.class);
+        PersonDTO savedPerson = personService.updatePerson(person.getId(), personDTO);
+        assertEquals(personDTO.getId(), savedPerson.getId());
+        verify(personRepository, times(1)).save(any(Person.class));
+        verify(personRepository, times(1)).findById(any(Long.class));
     }
 
     @Test
-    public void personNotFoundTest(){
+    public void shouldFetchOnePersonById(){
+        Person person = getDefaultPerson();
+        person.setId(1L);
+        when(personRepository.findById(person.getId())).thenReturn(Optional.of(person));
+
+        PersonDTO personDTO = personService.loadPerson(person.getId());
+        assertNotNull(personDTO);
+        verify(personRepository, times(1)).findById(any(Long.class));
+    }
+
+    @Test
+    public void shouldThrowNotFoundException(){
         Assertions.assertThrows(PersonNotFoundException.class, ()->personService.loadPerson(1));
     }
 
-    private Person getDefaultPerson(){
-        Person person = new Person();
+    @Test
+    public void shouldDeletePerson(){
+        Person person = getDefaultPerson();
         person.setId(1L);
-        person.setName("Syed Wajid");
-        person.setAge(32);
-        return person;
+        when(personRepository.findById(person.getId())).thenReturn(Optional.of(person));
+        doNothing().when(personRepository).delete(person);
+        personService.deletePerson(person.getId());
+        verify(personRepository, times(1)).delete(any());
+        verify(personRepository, times(1)).findById(any());
+    }
+
+    @Test
+    public void shouldThrowNotFoundExceptionOnDelete(){
+        Assertions.assertThrows(PersonNotFoundException.class, ()->{
+            Person person = getDefaultPerson();
+            person.setId(1L);
+            doNothing().when(personRepository).delete(person);
+            personService.deletePerson(person.getId());
+        });
+        verify(personRepository, never()).delete(any(Person.class));
+        verify(personRepository, times(1)).findById(any(Long.class));
     }
 }
