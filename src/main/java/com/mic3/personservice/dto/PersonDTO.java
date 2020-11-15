@@ -3,11 +3,16 @@ package com.mic3.personservice.dto;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Set;
 
 @Data
+@NoArgsConstructor
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class PersonDTO {
     /**
@@ -18,11 +23,13 @@ public class PersonDTO {
     /**
      * Person name
      */
+    @NotNull
     private String name; //required
 
     /**
      * Person surname
      */
+    @NotNull
     private String surname;// (required)
 
     /**
@@ -48,12 +55,12 @@ public class PersonDTO {
     /**
      * Person email address
      */
+    @Email
     private String email;
 
     /**
      * Contacts for person
      */
-    //@OneToMany(fetch = FetchType.LAZY)
     private Set<PersonDTO> contacts;
 
     /**

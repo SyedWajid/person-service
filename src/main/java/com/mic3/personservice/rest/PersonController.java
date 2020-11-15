@@ -37,7 +37,6 @@ public class PersonController {
     private static final String PERSON_UPDATED_LOG = "Person:{} was updated";
     private static final String PERSON_DELETED_LOG = "Person with id:{} was deleted";
 
-
     /**
      * Person service reference
      */
@@ -46,7 +45,7 @@ public class PersonController {
     /**
      * Returns a list of persons and sorted based on the query parameters
      * @param pageable
-     * @return
+     * @return ResponseEntity<Page<PersonDTO>>
      */
     @Operation(summary = "Returns a list of persons and sorted based on the query parameters")
     @ApiResponse(responseCode = "200", description = "List of persons",
@@ -87,8 +86,6 @@ public class PersonController {
         return ResponseEntity.ok(personService.loadPerson(personId));
     }
 
-    //todo contacts of person
-
     /**
      * Update person object
      * @param personId
@@ -113,7 +110,6 @@ public class PersonController {
      * @param personId
      * @return
      */
-    //todo 204
     @Operation(summary = "Delete person by its id")
     @ApiResponses(value = {@ApiResponse(responseCode = "404", description = "Person not found", content = @Content)})
     @DeleteMapping(path = "/{personId}")

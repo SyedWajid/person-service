@@ -7,6 +7,7 @@ public class TestPersonUtil {
     public static Person getDefaultPerson(){
         Person personDTO = new Person();
         personDTO.setName("Syed Wajid");
+        personDTO.setSurname("Wajid");
         personDTO.setAge(32);
         return personDTO;
     }
@@ -15,6 +16,7 @@ public class TestPersonUtil {
         PersonDTO person = new PersonDTO();
         person.setId(1L);
         person.setName("Syed Wajid");
+        person.setSurname("Wajid");
         person.setAge(32);
         return person;
     }
