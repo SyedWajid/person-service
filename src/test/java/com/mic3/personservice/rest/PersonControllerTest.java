@@ -45,7 +45,8 @@ public class PersonControllerTest extends AbstractRestTest {
 
         MvcResult response = mvc.perform(get(URI)).andDo(print()).
                 andExpect(status().isOk()).andReturn();
-        Page<PersonDTO> pagedResult = mapFromJson(response.getResponse().getContentAsString(), new TypeReference<RestResponsePage<PersonDTO>>() {});
+        Page<PersonDTO> pagedResult = mapFromJson(response.getResponse().getContentAsString(),
+                                                  new TypeReference<RestResponsePage<PersonDTO>>() {});
         assertNotNull(pagedResult);
         assertEquals(1, pagedResult.getTotalElements());
         assertEquals(personDTO.getName(), pagedResult.get().findFirst().get().getName());
@@ -59,10 +60,9 @@ public class PersonControllerTest extends AbstractRestTest {
 
         String inputJson = mapToJson(personDTO);
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(URI)
-                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andDo(print()).
+                andExpect(status().isCreated()).andReturn();
 
-        int status = mvcResult.getResponse().getStatus();
-        assertEquals(201, status);
         String content = mvcResult.getResponse().getContentAsString();
         PersonDTO personCreated = mapFromJson(content, PersonDTO.class);
 
@@ -80,10 +80,9 @@ public class PersonControllerTest extends AbstractRestTest {
 
         String inputJson = mapToJson(personDTO);
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(URI_ONE, personDTO.getId())
-                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andDo(print())
+                .andExpect(status().isAccepted()).andReturn();
 
-        int status = mvcResult.getResponse().getStatus();
-        assertEquals(200, status);
         String content = mvcResult.getResponse().getContentAsString();
         PersonDTO personUpdated = mapFromJson(content, PersonDTO.class);
 
@@ -99,10 +98,9 @@ public class PersonControllerTest extends AbstractRestTest {
         when(personService.loadPerson(1)).thenReturn(personDTO);
 
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(URI_ONE, personDTO.getId())
-                .contentType(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+                .contentType(MediaType.APPLICATION_JSON_VALUE)).andDo(print()).andExpect(status()
+                .isOk()).andReturn();
 
-        int status = mvcResult.getResponse().getStatus();
-        assertEquals(200, status);
         String content = mvcResult.getResponse().getContentAsString();
         PersonDTO personFetched = mapFromJson(content, PersonDTO.class);
 
@@ -118,10 +116,8 @@ public class PersonControllerTest extends AbstractRestTest {
         doNothing().when(personService).deletePerson(personDTO.getId());
 
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(URI_ONE, personDTO.getId())
-                .contentType(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-
-        int status = mvcResult.getResponse().getStatus();
-        assertEquals(200, status);
+                .contentType(MediaType.APPLICATION_JSON_VALUE)).andDo(print())
+                .andExpect(status().isAccepted()).andReturn();
 
         verify(personService, times(1)).deletePerson(any(Long.class));
     }

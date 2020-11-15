@@ -12,7 +12,7 @@
 	<artifactId>person-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>person-service</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Person Service Rest Apis</description>
 
 	<properties>
 		<java.version>8</java.version>
@@ -41,10 +41,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
@@ -56,11 +52,6 @@
 			<artifactId>modelmapper</artifactId>
 			<version>2.3.5</version>
 		</dependency>
-		<!--<dependency>
-			<groupId>org.redisson</groupId>
-			<artifactId>redisson-hibernate-53</artifactId>
-			<version>3.12.1</version>
-		</dependency>-->
 		<dependency>
 			<groupId>org.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
@@ -70,11 +61,6 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-jcache</artifactId>
 		</dependency>
-
-
-
-		<!-- provide ehcache integration with hibernate -->
-		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-ehcache -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-ehcache</artifactId>
@@ -104,17 +90,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>io.micrometer</groupId>
-			<artifactId>micrometer-registry-prometheus</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -174,5 +154,4 @@
 
 		</plugins>
 	</build>
-
 </project>

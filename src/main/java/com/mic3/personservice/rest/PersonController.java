@@ -102,7 +102,7 @@ public class PersonController {
             @Valid @RequestBody PersonDTO person) {
         PersonDTO updatedPerson = personService.updatePerson(personId, person);
         log.info(PERSON_UPDATED_LOG, updatedPerson.toString());
-        return ResponseEntity.ok(updatedPerson);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(updatedPerson);
     }
 
     /**
@@ -113,9 +113,10 @@ public class PersonController {
     @Operation(summary = "Delete person by its id")
     @ApiResponses(value = {@ApiResponse(responseCode = "404", description = "Person not found", content = @Content)})
     @DeleteMapping(path = "/{personId}")
-    public void deletePerson(
+    public ResponseEntity deletePerson(
             @PathVariable long personId) {
         personService.deletePerson(personId);
         log.info(PERSON_DELETED_LOG, personId);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }
