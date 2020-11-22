@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -35,6 +36,7 @@ public class PersonDTO {
     /**
      * Person age
      */
+    @Min(value = 0)
     private Integer age;
 
     /**

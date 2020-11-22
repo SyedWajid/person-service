@@ -15,6 +15,9 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+/**
+ * Person entity
+ */
 public class Person {
     /**
      * Id field
@@ -62,6 +65,7 @@ public class Person {
 
     /**
      * Contacts for person
+     * Excluding contacts set from equals, hashcode and toString
      */
     @OneToMany(fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude

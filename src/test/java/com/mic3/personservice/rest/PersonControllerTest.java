@@ -56,7 +56,7 @@ public class PersonControllerTest extends AbstractRestTest {
     public void createPersonTest() throws Exception {
 
         PersonDTO personDTO = getDefaultPersonDTO();
-        when(personService.createPerson(personDTO)).thenReturn(personDTO);
+        when(personService.create(personDTO)).thenReturn(personDTO);
 
         String inputJson = mapToJson(personDTO);
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(URI)
@@ -66,7 +66,7 @@ public class PersonControllerTest extends AbstractRestTest {
         String content = mvcResult.getResponse().getContentAsString();
         PersonDTO personCreated = mapFromJson(content, PersonDTO.class);
 
-        verify(personService, times(1)).createPerson(any(PersonDTO.class));
+        verify(personService, times(1)).create(any(PersonDTO.class));
         assertNotNull(personCreated);
         assertEquals(personCreated.getId(), 1);
         assertEquals(personDTO.getName(), personCreated.getName());
@@ -76,7 +76,7 @@ public class PersonControllerTest extends AbstractRestTest {
     public void updatePersonTest() throws Exception {
 
         PersonDTO personDTO = getDefaultPersonDTO();
-        when(personService.updatePerson(1, personDTO)).thenReturn(personDTO);
+        when(personService.update(1, personDTO)).thenReturn(personDTO);
 
         String inputJson = mapToJson(personDTO);
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(URI_ONE, personDTO.getId())
@@ -86,7 +86,7 @@ public class PersonControllerTest extends AbstractRestTest {
         String content = mvcResult.getResponse().getContentAsString();
         PersonDTO personUpdated = mapFromJson(content, PersonDTO.class);
 
-        verify(personService, times(1)).updatePerson(any(Long.class), any(PersonDTO.class));
+        verify(personService, times(1)).update(any(Long.class), any(PersonDTO.class));
         assertNotNull(personUpdated);
         assertEquals(personUpdated.getId(), 1);
     }
@@ -95,7 +95,7 @@ public class PersonControllerTest extends AbstractRestTest {
     public void loadPersonTest() throws Exception {
 
         PersonDTO personDTO = getDefaultPersonDTO();
-        when(personService.loadPerson(1)).thenReturn(personDTO);
+        when(personService.findById(1)).thenReturn(personDTO);
 
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(URI_ONE, personDTO.getId())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andDo(print()).andExpect(status()
@@ -104,7 +104,7 @@ public class PersonControllerTest extends AbstractRestTest {
         String content = mvcResult.getResponse().getContentAsString();
         PersonDTO personFetched = mapFromJson(content, PersonDTO.class);
 
-        verify(personService, times(1)).loadPerson(any(Long.class));
+        verify(personService, times(1)).findById(any(Long.class));
         assertNotNull(personFetched);
         assertEquals(personFetched.getId(), 1);
     }
@@ -113,12 +113,12 @@ public class PersonControllerTest extends AbstractRestTest {
     public void deletePersonTest() throws Exception {
 
         PersonDTO personDTO = getDefaultPersonDTO();
-        doNothing().when(personService).deletePerson(personDTO.getId());
+        doNothing().when(personService).delete(personDTO.getId());
 
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(URI_ONE, personDTO.getId())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)).andDo(print())
                 .andExpect(status().isAccepted()).andReturn();
 
-        verify(personService, times(1)).deletePerson(any(Long.class));
+        verify(personService, times(1)).delete(any(Long.class));
     }
 }

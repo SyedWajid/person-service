@@ -67,7 +67,7 @@ public class PersonController {
     @PostMapping
     public ResponseEntity<PersonDTO> createPerson(
             @Valid @RequestBody PersonDTO person) {
-        final PersonDTO createdPerson = personService.createPerson(person);
+        final PersonDTO createdPerson = personService.create(person);
         log.info(NEW_PERSON_LOG, createdPerson.toString());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPerson);
     }
@@ -83,7 +83,7 @@ public class PersonController {
             @ApiResponse(responseCode = "404", description = "Person not found", content = @Content)})
     @GetMapping(path = "/{personId}")
     public ResponseEntity<PersonDTO> loadPerson(@PathVariable(required = true) Long personId) {
-        return ResponseEntity.ok(personService.loadPerson(personId));
+        return ResponseEntity.ok(personService.findById(personId));
     }
 
     /**
@@ -100,7 +100,7 @@ public class PersonController {
     public ResponseEntity<PersonDTO> updatePerson(
             @PathVariable long personId,
             @Valid @RequestBody PersonDTO person) {
-        PersonDTO updatedPerson = personService.updatePerson(personId, person);
+        PersonDTO updatedPerson = personService.update(personId, person);
         log.info(PERSON_UPDATED_LOG, updatedPerson.toString());
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(updatedPerson);
     }
@@ -115,7 +115,7 @@ public class PersonController {
     @DeleteMapping(path = "/{personId}")
     public ResponseEntity deletePerson(
             @PathVariable long personId) {
-        personService.deletePerson(personId);
+        personService.delete(personId);
         log.info(PERSON_DELETED_LOG, personId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }

@@ -17,13 +17,32 @@ import java.util.Set;
 @Data
 @JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.CUSTOM, property = "error", visible = true)
 @JsonTypeIdResolver(LowerCaseClassNameResolver.class)
+/**
+ * ApiError class is used for validation messages
+ * @author Syed Wajid
+ */
 public class ApiError {
 
+    /**
+     * Http status codes
+     */
     private HttpStatus status;
+    /**
+     * Timestamp for exception
+     */
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime timestamp;
+    /**
+     * Error message
+     */
     private String message;
+    /**
+     * Error debug message
+     */
     private String debugMessage;
+    /**
+     * Sub errors
+     */
     private List<ApiSubError> subErrors;
 
     private ApiError() {

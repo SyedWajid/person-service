@@ -11,9 +11,14 @@ import java.util.Optional;
  * Service for person entity
  */
 public interface IPersonService {
+    /**
+     * Return page of persons
+     * @param pageable
+     * @return Page<PersonDTO>
+     */
     Page<PersonDTO> getPersons(Pageable pageable);
-    PersonDTO createPerson(PersonDTO person);
-    PersonDTO loadPerson(long personId);
-    PersonDTO updatePerson(long personId, PersonDTO person);
-    void deletePerson(long personId);
+    PersonDTO create(PersonDTO person);
+    PersonDTO findById(long personId);
+    PersonDTO update(long personId, PersonDTO person);
+    void delete(long personId);
 }
