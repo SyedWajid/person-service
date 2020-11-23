@@ -7,7 +7,7 @@ It uses ELK for extensive logging.
 Using open api for the documentation of restfull apis.
 All the tools like ELK and mysql database are configured using docker compose
 
-##Setup
+## Setup
 
 To use application in the production environment execute prod bash file. It will create setup base environment and start spring boot application with h2 as relational database
 If you want to use extensive logging then use dc file it will setup docker environment which will use elk stack for centralized logging. It uses mysql as base datbase.
@@ -19,9 +19,15 @@ To view restful apis documentation navigate to http://localhost:{port}/swagger-u
 
 <img src="images/swagger.png" />
 
-##Testing
+## Testing
 
 Below are the screeshot of some tests using curl
 
 <img src="images/create person.png" />
+
+<img src="images/list.png" />
+
+<img src="images/delete.png" />
+
+
 
