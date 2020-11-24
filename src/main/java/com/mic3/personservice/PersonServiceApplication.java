@@ -6,12 +6,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-@SpringBootApplication
-@Slf4j
 /**
  * Person Service
  * @author Syed Wajid
  */
+
+@SpringBootApplication
+@Slf4j
 public class PersonServiceApplication {
 	public static void main(String[] args) {
 		log.info("starting application");
