@@ -1,7 +1,7 @@
 # Person Service
 
 This is a spring boot application that uses exposes restfull apis for the person entity.
-It uses Spring Data to fetch/retrieve/update/delete data in a relational database.
+It uses Spring Data to crud operation on person entity in a relational database.
 It is using EHCache as 2nd level cache
 It uses ELK for extensive logging.
 Using open api for the documentation of restfull apis.
