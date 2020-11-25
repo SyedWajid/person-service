@@ -13,7 +13,11 @@ To use application in the production environment execute prod bash file. It will
 If you want to use extensive logging then use dc file it will setup docker environment which will use elk stack for centralized logging. It uses mysql as base database.
 For development, you can use dev file.
 
+## Javadocs
+
 To generate javadocs execute docs file. It wil generate javadocs and put it in target/site folder.
+
+## Api Dcoumentation
 
 To view restful apis documentation navigate to http://localhost:{port}/swagger-ui-custom.html
 
@@ -22,11 +26,13 @@ To view restful apis documentation navigate to http://localhost:{port}/swagger-u
 ## Testing
 
 Below are the screeshot of some tests using curl
-
+Create Person
 <img src="images/create person.png" />
 
+Person List
 <img src="images/list.png" />
 
+Delete Person
 <img src="images/delete.png" />
 
 
