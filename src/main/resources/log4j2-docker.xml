@@ -2,7 +2,7 @@
 <Configuration status="warn" strict="true" monitorInterval="30">
 
 	<Properties>
-		<Property name="filename">/home/wajidsye/Desktop/spring-boot-example.log</Property>
+		<Property name="filename">person-service.log</Property>
 		<Property name="defaultpattern">logdate=(%d{ISO8601}) thread=(%thread)) level=(%level) loggerclass=(%logger{36}) message=(%msg)%n</Property>
 	</Properties>
 	<Filter type="ThresholdFilter" level="trace"/>
@@ -14,7 +14,7 @@
 		<Appender type="File" name="File" fileName="${filename}">
 			<Layout type="PatternLayout" pattern="${defaultpattern}" />
 		</Appender>
-	    <Socket name="socket" host="localhost" port="9999" reconnectionDelayMillis="5000">
+	    <Socket name="socket" host="logstash" port="9999" reconnectionDelayMillis="5000">
 			<Layout type="PatternLayout" pattern="${defaultpattern}" />	
 		</Socket>
 	</Appenders>

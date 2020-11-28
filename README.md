@@ -26,6 +26,7 @@ To view restful apis documentation navigate to http://localhost:{port}/swagger-u
 ## Testing
 
 Below are the screeshot of some tests using curl
+
 Create Person
 <img src="images/create person.png" />
 
@@ -35,5 +36,8 @@ Person List
 Delete Person
 <img src="images/delete.png" />
 
+## Logs
 
+If you are using docker version of application, you can view logs for thes application using url 
+<img src="images/kibana-logs.png" />
 

@@ -2,7 +2,7 @@
 <Configuration status="warn" strict="true" monitorInterval="30">
 
 	<Properties>
-		<Property name="filename">/home/wajidsye/Desktop/spring-boot-example.log</Property>
+		<Property name="filename">person-service.log</Property>
 		<Property name="defaultpattern">logdate=(%d{ISO8601}) thread=(%thread)) level=(%level) loggerclass=(%logger{36}) message=(%msg)%n</Property>
 	</Properties>
 	<Filter type="ThresholdFilter" level="trace"/>
