@@ -161,7 +161,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      * @param headers
      * @param status
      * @param request
-     * @return
+     * @return ResponseEntity<Object>
      */
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(

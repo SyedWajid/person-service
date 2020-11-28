@@ -21,7 +21,7 @@ public class PersonServiceApplication {
 
 	/**
 	 * Using model mapper for conversion between dto and entity
-	 * @return
+	 * @return ModelMapper
 	 */
 	@Bean
 	public ModelMapper modelMapper() {

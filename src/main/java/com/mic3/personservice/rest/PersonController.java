@@ -1,8 +1,8 @@
 package com.mic3.personservice.rest;
 
-import com.mic3.personservice.domain.Person;
 import com.mic3.personservice.dto.PersonDTO;
 import com.mic3.personservice.service.IPersonService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,8 +28,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @RestController
 @AllArgsConstructor
 @Slf4j
-@RequestMapping(path = {"/api/v1/persons"})//, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-//@OpenAPIDefinition(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequestMapping(path = {"/api/v1/persons"}, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 
 public class PersonController {
 
@@ -59,7 +58,7 @@ public class PersonController {
     /**
      * Rest api for creating person
      * @param person
-     * @return
+     * @return ResponseEntity<PersonDTO>
      */
     @Operation(summary = "Crate a new person")
     @ApiResponse(responseCode = "201", description = "Person is created",
@@ -75,7 +74,7 @@ public class PersonController {
     /**
      * Fetch person by personId
      * @param personId
-     * @return
+     * @return ResponseEntity<PersonDTO>
      */
     @Operation(summary = "Get a person by id")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Found the person",
@@ -90,16 +89,15 @@ public class PersonController {
      * Update person object
      * @param personId
      * @param person
-     * @return
+     * @return ResponseEntity<PersonDTO>
      */
     @Operation(summary = "Update a person by its id")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Person was updated",
-                            content = {@Content(schema = @Schema(implementation = Person.class))}),
+    @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "Person was updated",
+                            content = {@Content(schema = @Schema(implementation = PersonDTO.class))}),
             @ApiResponse(responseCode = "404", description = "Person not found", content = @Content)})
     @PutMapping(path = "/{personId}", consumes = APPLICATION_JSON_VALUE)
-    public ResponseEntity<PersonDTO> updatePerson(
-            @PathVariable long personId,
-            @Valid @RequestBody PersonDTO person) {
+    public ResponseEntity<PersonDTO> updatePerson(@PathVariable long personId,
+                                                  @Valid @RequestBody PersonDTO person) {
         PersonDTO updatedPerson = personService.update(personId, person);
         log.info(PERSON_UPDATED_LOG, updatedPerson.toString());
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(updatedPerson);
@@ -108,13 +106,13 @@ public class PersonController {
     /**
      * Delete person object
      * @param personId
-     * @return
+     * @return ResponseEntity
      */
     @Operation(summary = "Delete person by its id")
-    @ApiResponses(value = {@ApiResponse(responseCode = "404", description = "Person not found", content = @Content)})
+    @ApiResponses(value = {@ApiResponse(responseCode = "202", description = "Person was deleted", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Person not found", content = @Content)})
     @DeleteMapping(path = "/{personId}")
-    public ResponseEntity deletePerson(
-            @PathVariable long personId) {
+    public ResponseEntity deletePerson(@PathVariable long personId) {
         personService.delete(personId);
         log.info(PERSON_DELETED_LOG, personId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
