@@ -38,6 +38,6 @@ Delete Person
 
 ## Logs
 
-If you are using docker version of application, you can view logs for thes application using url 
+If you are using docker version of application, you can view logs for the application using url http://localhost:5601/ 
 <img src="images/kibana-logs.png" />
 
