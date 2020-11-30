@@ -31,12 +31,7 @@ public class PersonServiceImpl implements  IPersonService{
 
     private ModelMapper modelMapper;
 
-    /*@Cacheable(
-            cacheNames = "persons2",
-            unless = "#result == null",
-            key = "#pageable"
-    )*/
-    public Page<PersonDTO> getPersons(Pageable pageable){
+    public Page<PersonDTO> list(Pageable pageable){
         return this.personRepository.findAll(pageable).map(this::toDTO);
     }
 

@@ -2,7 +2,6 @@ package com.mic3.personservice.rest;
 
 import com.mic3.personservice.dto.PersonDTO;
 import com.mic3.personservice.service.IPersonService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -51,7 +50,7 @@ public class PersonController {
                  content = {@Content(schema = @Schema(implementation = Page.class))})
     @GetMapping
     public ResponseEntity<Page<PersonDTO>> getPersons(Pageable pageable){
-        Page<PersonDTO> result = personService.getPersons(pageable);
+        Page<PersonDTO> result = personService.list(pageable);
         return ResponseEntity.ok(result);
     }
 
@@ -81,7 +80,7 @@ public class PersonController {
                                 content = {@Content(schema = @Schema(implementation = PersonDTO.class))}),
             @ApiResponse(responseCode = "404", description = "Person not found", content = @Content)})
     @GetMapping(path = "/{personId}")
-    public ResponseEntity<PersonDTO> loadPerson(@PathVariable(required = true) Long personId) {
+    public ResponseEntity<PersonDTO> list(@PathVariable(required = true) Long personId) {
         return ResponseEntity.ok(personService.findById(personId));
     }
 

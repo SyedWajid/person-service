@@ -3,7 +3,6 @@ package com.mic3.personservice.service;
 import com.mic3.personservice.domain.Person;
 import com.mic3.personservice.dto.PersonDTO;
 import com.mic3.personservice.repository.PersonRepository;
-import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,12 +53,12 @@ public class PersonServiceTest {
         Person person = getDefaultPerson();
         Pageable p = PageRequest.of(0, 10);
         List<Person> personList = new ArrayList<>();
-        personList.add(getDefaultPerson());
+        personList.add(person);
         Page<Person> result = new PageImpl<>(personList, p, 1);
         when(personRepository.findAll(p)).thenReturn(result);
         when(modelMapper.map(person, PersonDTO.class)).thenReturn(getDefaultPersonDTO());
 
-        Page<PersonDTO> pagedResult = this.personService.getPersons(PageRequest.of(0, 10));
+        Page<PersonDTO> pagedResult = this.personService.list(PageRequest.of(0, 10));
         assertEquals(1, pagedResult.getTotalElements());
         assertEquals(person.getName(), pagedResult.get().findFirst().get().getName());
     }

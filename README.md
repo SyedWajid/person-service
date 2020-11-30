@@ -30,6 +30,9 @@ Below are the screeshot of some tests using curl
 Create Person
 <img src="images/create person.png" />
 
+Update
+<img src="images/update.png" />
+
 Person List
 <img src="images/list.png" />
 

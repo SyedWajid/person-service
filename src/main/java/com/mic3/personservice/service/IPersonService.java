@@ -16,7 +16,7 @@ public interface IPersonService {
      * @param pageable
      * @return Page<PersonDTO>
      */
-    Page<PersonDTO> getPersons(Pageable pageable);
+    Page<PersonDTO> list(Pageable pageable);
     PersonDTO create(PersonDTO person);
     PersonDTO findById(long personId);
     PersonDTO update(long personId, PersonDTO person);

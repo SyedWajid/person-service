@@ -41,7 +41,7 @@ public class PersonControllerTest extends AbstractRestTest {
         PersonDTO personDTO = getDefaultPersonDTO();
         personList.add(personDTO);
         Page<PersonDTO> result = new RestResponsePage<>(personList);
-        when(personService.getPersons(pageable)).thenReturn(result);
+        when(personService.list(pageable)).thenReturn(result);
 
         MvcResult response = mvc.perform(get(URI)).andDo(print()).
                 andExpect(status().isOk()).andReturn();
