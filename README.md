@@ -1,4 +1,4 @@
-# Person Service
+# Spring Restful APIs with Docker ELK and OpenAPI
 
 This is a spring boot application that exposes restfull apis for the person entity.
 It uses Spring Data to crud operation on person entity in a relational database.
