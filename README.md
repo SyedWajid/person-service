@@ -7,7 +7,6 @@ It uses ELK for extensive logging.
 Using open api for the documentation of restfull apis.
 All the tools like ELK and mysql database are configured using docker compose
 
-test
 ## Setup
 
 To use application in the production environment execute prod bash file. It will create setup base environment and start spring boot application with h2 as relational database
