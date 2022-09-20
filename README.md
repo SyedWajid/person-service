@@ -6,7 +6,6 @@ It is using EHCache as 2nd level cache
 It uses ELK for extensive logging.
 Using open api for the documentation of restfull apis.
 All the tools like ELK and mysql database are configured using docker compose
-test
 
 ## Setup
 
