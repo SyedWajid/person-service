@@ -1,0 +1,56 @@
+version: '2'
+
+services:
+  app:
+    container_name: app
+    build: .
+    ports:
+      - "8083:8083"
+    links:
+      - logstash
+      - mysql-service
+    depends_on:
+      - logstash
+      - mysql-service
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker"
+
+  mysql-service:
+    image: mysql:5.7
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=person
+
+  elasticsearch:
+    image: elasticsearch:5
+    container_name: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+
+  logstash:
+    image: logstash:5
+    container_name: logstash
+    command: -f /etc/logstash/conf.d/
+    volumes:
+      - ./elk/logstash/config:/etc/logstash/conf.d
+    ports:
+      - "9999:9999"
+    links:
+      - elasticsearch
+
+  kibana:
+    image: kibana:5
+    container_name: kibana
+    volumes:
+      - ./elk/kibana/config/:/opt/kibana/config/
+    ports:
+      - "5601:5601"
+    links:
+      - elasticsearch
